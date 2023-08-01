@@ -9,25 +9,25 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton href="/dashboard">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton href="/wallet">
       <ListItemIcon>
         <WalletIcon />
       </ListItemIcon>
       <ListItemText primary="Wallet" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton href="/reports">
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
       <ListItemText primary="Reports" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton href="/login">
       <ListItemIcon>
         <LogoutIcon />
       </ListItemIcon>
