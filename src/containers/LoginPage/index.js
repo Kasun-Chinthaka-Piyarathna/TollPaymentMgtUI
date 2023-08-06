@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +13,10 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+
+import { login } from "src/api/auth.service";
 
 import paymentbackground2 from 'src/images/paymentbackground2.jpg';
 
@@ -28,23 +33,61 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
-  const handleSubmit = (event) => {
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setMessage("");
+    setLoading(true);
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    let username = data.get('username');
+    let password = data.get('password');
+
+    let res = await login(
+      username,
+      password
+    );
+    console.log(res);
+    if (res != null) {
+      setMessage("User logged successfully!");
+      setLoading(false);
+      setSnackbarOpen(true);
+      navigate("/dashboard");
+    } else {
+      setMessage("Something went wrong. Please try it again!");
+      setLoading(false);
+      setSnackbarOpen(true);
+    }
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
+        {snackbarOpen === true && (
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            message={message}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            severity="success"
+          />
+        )}
         <CssBaseline />
         <Grid
           item
@@ -76,15 +119,15 @@ export default function LoginPage() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate={false} onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
                 autoFocus
               />
               <TextField
@@ -101,6 +144,11 @@ export default function LoginPage() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
+              {loading === true && (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <CircularProgress />
+                </div>
+              )}
               <Button
                 type="submit"
                 fullWidth
@@ -110,11 +158,6 @@ export default function LoginPage() {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
                 <Grid item>
                   <Link href="/register" variant="body2">
                     {"Don't have an account? Sign Up"}

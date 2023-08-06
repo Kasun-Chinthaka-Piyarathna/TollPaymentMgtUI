@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +13,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+
+import { register } from "src/api/auth.service";
 
 function Copyright(props) {
     return (
@@ -26,23 +31,75 @@ function Copyright(props) {
     );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function RegisterPage() {
-    const handleSubmit = (event) => {
+    const [loading, setLoading] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const navigate = useNavigate();
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        setMessage("");
+        setLoading(true);
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        let firstName = data.get('firstName');
+        let lastName = data.get('lastName');
+        let username = data.get('username');
+        let phoneNumber = data.get('phoneNumber');
+        let vehicleNumber = data.get('vehicleNumber');
+        let address = data.get('address');
+        let email = data.get('email');
+        let password = data.get('password');
+
+        let res = await register(
+            firstName,
+            lastName,
+            username,
+            phoneNumber,
+            vehicleNumber,
+            address,
+            email,
+            password
+        );
+        console.log(res);
+        if (res != null) {
+            const { data } = res;
+            const { message } = data;
+            setMessage(message);
+            setLoading(false);
+            setSnackbarOpen(true);
+            navigate('/login');
+        } else {
+            setMessage("Something went wrong. Please try it again!");
+            setLoading(false);
+            setSnackbarOpen(true);
+        }
+
     };
 
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
+                {snackbarOpen === true && (
+                    <Snackbar
+                        open={snackbarOpen}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
+                        message={message}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        severity="success"
+                    />
+                )}
                 <CssBaseline />
                 <Box
                     sx={{
@@ -58,11 +115,11 @@ export default function RegisterPage() {
                     <Typography component="h1" variant="h5">
                         Sign up
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box component="form" noValidate={false} onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    autoComplete="given-name"
+                                    autoComplete="firstName"
                                     name="firstName"
                                     required
                                     fullWidth
@@ -83,6 +140,17 @@ export default function RegisterPage() {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    autoComplete="username"
+                                    name="username"
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Username"
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
                                     autoComplete="phoneNumber"
                                     name="phoneNumber"
                                     required
@@ -92,7 +160,7 @@ export default function RegisterPage() {
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
                                     required
                                     fullWidth
@@ -139,13 +207,17 @@ export default function RegisterPage() {
                                     label="I want to receive inspiration, marketing promotions and updates via email."
                                 />
                             </Grid>
+                            {loading === true && (
+                                <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                                    <CircularProgress />
+                                </div>
+                            )}
                         </Grid>
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            href="/dashboard"
                         >
                             Sign Up
                         </Button>
@@ -160,6 +232,6 @@ export default function RegisterPage() {
                 </Box>
                 <Copyright sx={{ mt: 5 }} />
             </Container>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 }

@@ -17,6 +17,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import { deepOrange, deepPurple } from '@mui/material/colors';
 
 import { mainListItems } from './listItems';
 import Deposits from './Deposits';
@@ -122,11 +124,7 @@ export default function DashboardPage() {
             >
               Dashboard
             </Typography>
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
+            <Avatar sx={{ bgcolor: deepPurple[500] }}>K</Avatar>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
