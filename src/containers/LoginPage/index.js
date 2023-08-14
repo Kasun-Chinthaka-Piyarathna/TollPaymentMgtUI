@@ -17,7 +17,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 
 import { login } from "src/api/auth.service";
-
 import paymentbackground2 from 'src/images/paymentbackground2.jpg';
 
 function Copyright(props) {
@@ -62,14 +61,18 @@ export default function LoginPage() {
       username,
       password
     );
-    console.log(res);
     if (res != null) {
+      const { roles } = res;
       setMessage("User logged successfully!");
       setLoading(false);
       setSnackbarOpen(true);
-      navigate("/dashboard");
+      if (roles.includes("ROLE_ADMIN")) {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
-      setMessage("Something went wrong. Please try it again!");
+      setMessage("Either username or password is incorrect. Please try it again!");
       setLoading(false);
       setSnackbarOpen(true);
     }

@@ -69,16 +69,21 @@ export default function RegisterPage() {
             vehicleNumber,
             address,
             email,
-            password
+            password,
+            0,
         );
-        console.log(res);
         if (res != null) {
-            const { data } = res;
-            const { message } = data;
-            setMessage(message);
-            setLoading(false);
-            setSnackbarOpen(true);
-            navigate('/login');
+            const { message, status } = res;
+            if (status === "Success") {
+                setMessage(message);
+                setLoading(false);
+                setSnackbarOpen(true);
+                navigate('/login');
+            } else {
+                setMessage(message);
+                setLoading(false);
+                setSnackbarOpen(true);
+            }
         } else {
             setMessage("Something went wrong. Please try it again!");
             setLoading(false);
@@ -158,6 +163,7 @@ export default function RegisterPage() {
                                     id="phoneNumber"
                                     label="phone Number"
                                     autoFocus
+                                    type="number"
                                 />
                             </Grid>
                             <Grid item xs={12}>

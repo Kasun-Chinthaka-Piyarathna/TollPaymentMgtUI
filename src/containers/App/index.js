@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from 'src/containers/LoginPage';
 import RegisterPage from 'src/containers/RegisterPage';
 import DashboardPage from 'src/containers/DashboardPage';
-
+import AdminDashboardPage from '../AdminDashboardPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -29,6 +29,7 @@ class App extends React.Component {
                         <Route path="login" element={<LoginPage />} />
                         <Route path="register" element={<RegisterPage />} />
                         <Route path="dashboard" element={<DashboardPage />} />
+                        <Route path="admin-dashboard" element={<AdminDashboardPage />} />
                     </Routes>
                 </BrowserRouter>
             </div>
