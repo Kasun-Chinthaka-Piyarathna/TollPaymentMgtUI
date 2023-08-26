@@ -14,6 +14,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import Tooltip from '@mui/material/Tooltip';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Snackbar from '@mui/material/Snackbar';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { getAllUsers, getAllUsersRides, updateUserWallet } from "src/api/user.service";
 
@@ -37,7 +38,8 @@ const defaultTheme = createTheme();
 
 export default function AdminDashboardPage() {
 
-  const [loading, setLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
+  const [ridesLoading, setRidesLoading] = useState(true);
   const [allRides, setAllRides] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [selectUserProfile, setSelectUserProfile] = useState({});
@@ -56,21 +58,24 @@ export default function AdminDashboardPage() {
       if (res != null) {
         const { status, message, data } = res.data;
         if (status === "Success") {
-          setLoading(false);
+          setUserLoading(false);
           setAllUsers(data);
-        } else {
-          setLoading(false);
-        }
+          setMessage(message);
+          setSnackbarOpen(true);
+        } else { }
+        setUserLoading(false);
       }
     });
     getAllUsersRides().then(res => {
       if (res != null) {
         const { status, message, data } = res.data;
         if (status === "Success") {
-          setLoading(false);
+          setRidesLoading(false);
           setAllRides(data);
+          setMessage(message);
+          setSnackbarOpen(true);
         } else {
-          setLoading(false);
+          setRidesLoading(false);
         }
       }
     });
@@ -97,20 +102,21 @@ export default function AdminDashboardPage() {
   };
 
   const handleWalletUpdate = async () => {
-    //todo
-    setLoading(true);
+    setUserLoading(true);
     const { wallet, id } = selectUserProfile;
     let updatedWalletBalance = wallet + parseFloat(newPayment);
     let res = await updateUserWallet(id, updatedWalletBalance);
     if (res != null) {
-      const { status, message, data } = res.data;
+      const { status, message } = res.data;
       if (status === "Success") {
-        setLoading(false);
+        setMessage(message);
+        setSnackbarOpen(true);
+        setUserLoading(false);
         setOpenUpdateWalletDialog(false);
         setRefresh(!refresh);
       } else {
         setOpenUpdateWalletDialog(false);
-        setLoading(false);
+        setUserLoading(false);
       }
     }
   };
@@ -189,21 +195,33 @@ export default function AdminDashboardPage() {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <UsersTable
-                      rows={allUsers}
-                      title="All users"
-                      openWallet={openWallet}
-                    />
+                    {userLoading === true ? (
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      <UsersTable
+                        rows={allUsers}
+                        title="All users"
+                        openWallet={openWallet}
+                      />
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <RidesTable
-                      rows={allRides}
-                      title="All rides"
-                    />
+                    {ridesLoading === true ? (
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <CircularProgress color="secondary" />
+                      </Box>
+                    ) : (
+                      <RidesTable
+                        rows={allRides}
+                        title="All rides"
+                      />
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
