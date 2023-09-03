@@ -14,6 +14,16 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+![Screenshot](https://github.com/Kasun-Chinthaka-Piyarathna/TollPaymentMgtUI/blob/master/screenshots/screenshot_2.png)
+
+![Screenshot](https://github.com/Kasun-Chinthaka-Piyarathna/TollPaymentMgtUI/blob/master/screenshots/screenshot_3.png)
+
+![Screenshot](https://github.com/Kasun-Chinthaka-Piyarathna/TollPaymentMgtUI/blob/master/screenshots/screenshot_1.png)
+
+![Screenshot](https://github.com/Kasun-Chinthaka-Piyarathna/TollPaymentMgtUI/blob/master/screenshots/screenshot_4.png)
+
+![Screenshot](https://github.com/Kasun-Chinthaka-Piyarathna/TollPaymentMgtUI/blob/master/screenshots/screenshot_5.png)
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
